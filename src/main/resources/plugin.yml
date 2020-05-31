@@ -1,0 +1,4 @@
+name: Phobos
+version: ${project.version}
+main: me.sagan.phobos.Phobos
+api-version: 1.13
