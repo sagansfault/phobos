@@ -15,7 +15,7 @@ class ClosingBuildPattern(private val dir: Direction = Direction.X_AXIS, private
             while (iterable.isNotEmpty()) {
 
                 val toAdd = iterable.asSequence().filter {
-                    dir.getBlockVectorComponent(it) == dir.getBlockVectorComponent(iterable.last()) ||
+                    dir.getBlockVectorComponent(it) == dir.getBlockVectorComponent(iterable[iterable.size - 1]) ||
                             dir.getBlockVectorComponent(it) == dir.getBlockVectorComponent(iterable[0]) }.toMutableList()
                 iterable.removeAll(toAdd)
 

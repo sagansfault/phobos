@@ -11,7 +11,7 @@ class RandomBuildPattern(private val blocksPerIteration: Int = 1) : BuildPattern
     override fun sort(toSort: List<BlockVector3>, clipboard: Clipboard): List<List<BlockVector3>> {
         val toReturn: MutableList<MutableList<BlockVector3>> = mutableListOf()
 
-        val iterable = ArrayList(toSort)
+        val iterable = ArrayList(toSort).toMutableList()
 
         val iterationActual = max(1, blocksPerIteration)
 
@@ -19,10 +19,14 @@ class RandomBuildPattern(private val blocksPerIteration: Int = 1) : BuildPattern
             val toAdd: MutableList<BlockVector3> = mutableListOf()
 
             for (i in 0 until iterationActual) {
-                if (iterable.isEmpty()) break@outer
-
-                toAdd.add(iterable.removeAt(Random.nextInt(iterable.size)))
+                if (iterable.isNotEmpty()) {
+                    val bv: BlockVector3 = iterable.random()
+                    iterable.remove(bv)
+                    toAdd.add(bv)
+                }
             }
+
+            toReturn.add(toAdd)
         }
 
         return toReturn
