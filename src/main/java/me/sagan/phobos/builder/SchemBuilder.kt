@@ -65,29 +65,25 @@ class SchemBuilder(file: File) {
 
                 // hop back on sync to place the blocks
                 object : BukkitRunnable() {
+                    var i: Int = 0
                     override fun run() {
-                        object : BukkitRunnable() {
-                            var i: Int = 0
-                            override fun run() {
-                                if (i >= sorted.size) {
-                                    this.cancel()
-                                    return
-                                }
+                        if (i >= sorted.size) {
+                            this.cancel()
+                            return
+                        }
 
-                                val toPlace: MutableMap<BlockVector3, BlockVector3> = mutableMapOf()
-                                for (blockVector3 in sorted[i]) {
-                                    val actualLoc: BlockVector3 = blockVector3.add(BukkitAdapter.asBlockVector(origin).subtract(clipboardActual.origin))
-                                    toPlace[blockVector3] = actualLoc
+                        val toPlace: MutableMap<BlockVector3, BlockVector3> = mutableMapOf()
+                        for (blockVector3 in sorted[i]) {
+                            val actualLoc: BlockVector3 = blockVector3.add(BukkitAdapter.asBlockVector(origin).subtract(clipboardActual.origin))
+                            toPlace[blockVector3] = actualLoc
 
-                                    blockPlaceEffect?.onPlace(Location(origin.world, actualLoc.x.toDouble(), actualLoc.y.toDouble(), actualLoc.z.toDouble()))
-                                }
+                            blockPlaceEffect?.onPlace(Location(origin.world, actualLoc.x.toDouble(), actualLoc.y.toDouble(), actualLoc.z.toDouble()))
+                        }
 
-                                placeBlocks(toPlace, origin.world!!)
-                                i++
-                            }
-                        }.runTaskTimer(Phobos.instance!!, 0, ticksBetweenIterations)
+                        placeBlocks(toPlace, origin.world!!)
+                        i++
                     }
-                }.runTask(Phobos.instance!!)
+                }.runTaskTimer(Phobos.instance!!, 0, ticksBetweenIterations)
             }
         }.runTaskAsynchronously(Phobos.instance!!)
     }
