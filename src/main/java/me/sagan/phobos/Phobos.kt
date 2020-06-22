@@ -1,12 +1,11 @@
 package me.sagan.phobos
 
-import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
-class Phobos : JavaPlugin(), Listener {
+class Phobos : JavaPlugin() {
 
     companion object {
-        var instance: Phobos? = null
+        lateinit var instance: Phobos
     }
 
     override fun onEnable() {

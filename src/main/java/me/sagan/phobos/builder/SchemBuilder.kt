@@ -1,5 +1,7 @@
 package me.sagan.phobos.builder
 
+import com.okkero.skedule.SynchronizationContext
+import com.okkero.skedule.schedule
 import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.extent.clipboard.Clipboard
@@ -9,9 +11,9 @@ import me.sagan.phobos.Phobos
 import me.sagan.phobos.builder.buildpattern.BuildPattern
 import me.sagan.phobos.builder.buildpattern.impl.DefaultBuildPattern
 import me.sagan.phobos.builder.effect.BlockPlaceEffect
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
-import org.bukkit.scheduler.BukkitRunnable
 import java.io.File
 import java.io.FileInputStream
 
@@ -51,41 +53,32 @@ class SchemBuilder(file: File) {
 
     fun buildAt(origin: Location) {
 
-        object : BukkitRunnable() {
-            override fun run() {
+        Bukkit.getScheduler().schedule(Phobos.instance, SynchronizationContext.ASYNC) {
+            // start off by running heavy computations async
+            val clipboardActual = clipboard ?: return@schedule
 
-                // start off by running heavy computations async
-                val clipboardActual = clipboard ?: return
+            val toSort: MutableList<BlockVector3> =
+                    if (ignoreAir) clipboardActual.region.filter { !clipboardActual.getBlock(it).blockType.material.isAir }.toMutableList()
+                    else clipboardActual.region.toMutableList()
 
-                val toSort: MutableList<BlockVector3> =
-                        if (ignoreAir) clipboardActual.region.filter { !clipboardActual.getBlock(it).blockType.material.isAir }.toMutableList()
-                        else clipboardActual.region.toMutableList()
+            val sorted: List<List<BlockVector3>> = buildPattern.sort(toSort, clipboardActual)
 
-                val sorted: List<List<BlockVector3>> = buildPattern.sort(toSort, clipboardActual)
+            // hop back on sync to place the blocks
+            switchContext(SynchronizationContext.SYNC)
+            repeating(ticksBetweenIterations)
+            for (i in 0..sorted.size) {
+                val toPlace: MutableMap<BlockVector3, BlockVector3> = mutableMapOf()
+                for (blockVector3 in sorted[i]) {
+                    val actualLoc: BlockVector3 = blockVector3.add(BukkitAdapter.asBlockVector(origin).subtract(clipboardActual.origin))
+                    toPlace[blockVector3] = actualLoc
 
-                // hop back on sync to place the blocks
-                object : BukkitRunnable() {
-                    var i: Int = 0
-                    override fun run() {
-                        if (i >= sorted.size) {
-                            this.cancel()
-                            return
-                        }
+                    blockPlaceEffect?.onPlace(Location(origin.world, actualLoc.x.toDouble(), actualLoc.y.toDouble(), actualLoc.z.toDouble()))
+                }
 
-                        val toPlace: MutableMap<BlockVector3, BlockVector3> = mutableMapOf()
-                        for (blockVector3 in sorted[i]) {
-                            val actualLoc: BlockVector3 = blockVector3.add(BukkitAdapter.asBlockVector(origin).subtract(clipboardActual.origin))
-                            toPlace[blockVector3] = actualLoc
-
-                            blockPlaceEffect?.onPlace(Location(origin.world, actualLoc.x.toDouble(), actualLoc.y.toDouble(), actualLoc.z.toDouble()))
-                        }
-
-                        placeBlocks(toPlace, origin.world!!)
-                        i++
-                    }
-                }.runTaskTimer(Phobos.instance!!, 0, ticksBetweenIterations)
+                placeBlocks(toPlace, origin.world!!)
+                yield()
             }
-        }.runTaskAsynchronously(Phobos.instance!!)
+        }
     }
 
     private fun placeBlocks(clipboardToActual: Map<BlockVector3, BlockVector3>, world: World) {
