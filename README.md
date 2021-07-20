@@ -67,6 +67,10 @@ This will build the same schematic but with the following characteristics accord
 The power is yours now. You can make custom block place effect and build pattern classes implementing
 `PlaceEffect` and `BuildPattern` respectively. Look at existing examples in phobos for an idea of what these do
 
+***[NOTE]***: You also get access to the `Clipboard` loaded into the schematic builder via
+`SchemBuilder#.getClipboard()`. With this you can apply rotations and transformations to the
+clipboard before it is built.
+
 These are functional interfaces so you can also inline them:
 ```java
 SchemBuilder.from(
