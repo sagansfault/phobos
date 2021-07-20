@@ -1,0 +1,7 @@
+name: Phobos
+description: An asyncronously processed world edit schematic builder
+main: sh.sagan.phobos.Phobos
+version: 2.0.0
+api-version: 1.16
+depend:
+  - WorldEdit
