@@ -21,6 +21,11 @@ Phobos, at the time of writing this, uses **WorldEdit** `v7.2.5`
     <!-- <scope>provided</scope> if this will be used as a plugin -->
 </dependency>
 ```
+
+## Contributing
+Contributions are always welcome via PRs. If it's a large one, open an issue and discuss/explain
+what you're doing and why.
+
 ## Usage
 To build a schematic:
 ```java
@@ -60,7 +65,9 @@ This will build the same schematic but with the following characteristics accord
 5. Will ignore air blocks in the clipboard and not place them (ignore air)
 
 The power is yours now. You can make custom block place effect and build pattern classes implementing
-`PlaceEffect` and `BuildPattern` respectively. These are functional interfaces so you can also inline them:
+`PlaceEffect` and `BuildPattern` respectively. Look at existing examples in phobos for an idea of what these do
+
+These are functional interfaces so you can also inline them:
 ```java
 SchemBuilder.from(
         myPluginInstance, 
