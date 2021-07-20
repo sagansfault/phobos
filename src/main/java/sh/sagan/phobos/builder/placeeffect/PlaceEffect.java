@@ -1,4 +1,4 @@
-package sh.sagan.phobos.builder.palceeffect;
+package sh.sagan.phobos.builder.placeeffect;
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import org.bukkit.Location;

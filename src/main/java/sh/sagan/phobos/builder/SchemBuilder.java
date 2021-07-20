@@ -14,7 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import sh.sagan.phobos.builder.buildpattern.BuildPattern;
-import sh.sagan.phobos.builder.palceeffect.PlaceEffect;
+import sh.sagan.phobos.builder.placeeffect.PlaceEffect;
 
 import java.io.File;
 import java.io.FileInputStream;

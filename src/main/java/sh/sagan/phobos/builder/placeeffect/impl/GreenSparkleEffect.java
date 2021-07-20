@@ -1,9 +1,9 @@
-package sh.sagan.phobos.builder.palceeffect.impl;
+package sh.sagan.phobos.builder.placeeffect.impl;
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import sh.sagan.phobos.builder.palceeffect.PlaceEffect;
+import sh.sagan.phobos.builder.placeeffect.PlaceEffect;
 
 import java.util.concurrent.ThreadLocalRandom;
 
