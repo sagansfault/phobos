@@ -1,6 +1,9 @@
 # phobos 🪐
 A stylistic asynchronously processed mine craft world edit schematic builder, providing cool ways to build schematics with effects and pattern all while the sorting and processing happens on another thread
 
+### Why Java 16?
+You need directions to the bingo hall too? Update your java, it's starting to smell.
+
 ## What is phobos?
 Phobos aims to add funtionality for developers to build world edit shematics (`.schem` files) with some style in their worlds. The following are some
 basic examples of some of the build patterns that are currently in phobos as of `v2.0.0`
