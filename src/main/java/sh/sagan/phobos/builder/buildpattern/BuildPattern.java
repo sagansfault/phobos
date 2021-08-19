@@ -5,8 +5,21 @@ import org.bukkit.Location;
 
 import java.util.List;
 
-@FunctionalInterface
-public interface BuildPattern {
+public abstract class BuildPattern {
+
+    protected final int blocksPerIteration;
+
+    public BuildPattern(int blocksPerIteration) {
+        this.blocksPerIteration = Math.max(1, blocksPerIteration);
+    }
+
+    public BuildPattern() {
+        this(Integer.MAX_VALUE);
+    }
+
+    public int getBlocksPerIteration() {
+        return blocksPerIteration;
+    }
 
     /**
      * Arranges a set of unordered block locations into an order in which they should be placed. For examples, view the
@@ -16,5 +29,5 @@ public interface BuildPattern {
      * @param clipboard The clipboard from which these blocks came from. This may not be required by all build patterns.
      * @return A list of arranged/ordered block locations to build this schematic in
      */
-    List<Location> arrange(List<Location> toArrange, Clipboard clipboard);
+    public abstract List<List<Location>> arrange(List<Location> toArrange, Clipboard clipboard);
 }

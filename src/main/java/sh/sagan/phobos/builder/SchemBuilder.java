@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import sh.sagan.phobos.builder.buildpattern.BuildPattern;
+import sh.sagan.phobos.builder.buildpattern.impl.Default;
 import sh.sagan.phobos.builder.placeeffect.PlaceEffect;
 
 import java.io.File;
@@ -24,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class SchemBuilder {
 
@@ -33,9 +33,8 @@ public class SchemBuilder {
 
     private int ticksBetweenIterations = 1;
     private boolean ignoreAir = false;
-    private BuildPattern buildPattern = (toArrange, clipboard) -> toArrange;
+    private BuildPattern buildPattern = new Default();
     private PlaceEffect placeEffect = (blockLocation, clipboard) -> {};
-    private int blocksPerIteration = Integer.MAX_VALUE;
 
     private SchemBuilder(JavaPlugin plugin, Clipboard clipboard) {
         this.plugin = plugin;
@@ -116,18 +115,6 @@ public class SchemBuilder {
     }
 
     /**
-     * Sets the blocks per iteration of this builder. Default is {@code Integer.MAX_VALUE} which will paste all the
-     * blocks in one iteration (at once)
-     *
-     * @param blocksPerIteration The blocks to place per iteration
-     * @return This builder instance
-     */
-    public SchemBuilder blocksPerIteration(int blocksPerIteration) {
-        this.blocksPerIteration = Math.max(1, blocksPerIteration);
-        return this;
-    }
-
-    /**
      * Gets the clipboard object used for this schematic. Use this to alter the clipboard before running the builder
      *
      * @return The clipboard for this loaded schematic.
@@ -162,9 +149,7 @@ public class SchemBuilder {
                     clipboard.getRegion().forEach(bv -> toArrange.add(BukkitAdapter.adapt(location.getWorld(), bv)));
                 }
 
-                List<BlockVector3> arranged = buildPattern.arrange(toArrange, clipboard).stream()
-                        .map(BukkitAdapter::asBlockVector)
-                        .collect(Collectors.toList());
+                List<List<Location>> arranged = buildPattern.arrange(toArrange, clipboard);
 
                 new BukkitRunnable() {
                     @Override
@@ -174,26 +159,12 @@ public class SchemBuilder {
                             return;
                         }
 
-                        List<BlockVector3> set = new ArrayList<>();
-                        if (blocksPerIteration > arranged.size()) {
-                            set = new ArrayList<>(arranged);
-                            arranged.clear();
-                        } else {
-                            for (int i = 0; i < blocksPerIteration; i++) {
-                                BlockVector3 found;
-                                try {
-                                    found = arranged.remove(0);
-                                } catch (IndexOutOfBoundsException | UnsupportedOperationException exception) {
-                                    break;
-                                }
-                                set.add(found);
-                            }
-                        }
-
+                        List<Location> iteration = arranged.remove(0);
                         Map<BlockVector3, BlockVector3> toPlace = new HashMap<>();
-                        set.forEach(blockVector3 -> {
-                            BlockVector3 target = blockVector3.add(buildAt.subtract(clipboard.getOrigin()));
-                            toPlace.put(blockVector3, target);
+                        iteration.forEach(loc -> {
+                            BlockVector3 converted = BukkitAdapter.asBlockVector(loc);
+                            BlockVector3 target = converted.add(buildAt.subtract(clipboard.getOrigin()));
+                            toPlace.put(converted, target);
                         });
 
                         placeBlocks(toPlace, BukkitAdapter.adapt(location.getWorld()));
