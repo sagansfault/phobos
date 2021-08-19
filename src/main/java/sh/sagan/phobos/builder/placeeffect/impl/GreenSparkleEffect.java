@@ -9,9 +9,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GreenSparkleEffect implements PlaceEffect {
 
+    private final ThreadLocalRandom rand = ThreadLocalRandom.current();
+
     @Override
     public void onPlace(Location blockLocation, Clipboard clipboard) {
-        ThreadLocalRandom rand = ThreadLocalRandom.current();
         blockLocation.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, blockLocation.clone().add(
                 rand.nextDouble(-1, 1),
                 rand.nextDouble(-1, 1),
