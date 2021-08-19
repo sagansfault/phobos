@@ -57,7 +57,18 @@ public class EdgeToEdgeLayered extends BuildPattern {
         return Util.splitOnNewValue(sorted, splitOn);
     }
 
+    /**
+     * The direction to build this in.
+     */
     public enum Direction {
-        Y_POSITIVE, X_POSITIVE, Z_POSITIVE, Y_NEGATIVE, X_NEGATIVE, Z_NEGATIVE
+        /**
+         * Builds in the Y direction moving positively. (bottom to top)
+         */
+        Y_POSITIVE,
+        X_POSITIVE,
+        Z_POSITIVE,
+        Y_NEGATIVE,
+        X_NEGATIVE,
+        Z_NEGATIVE
     }
 }

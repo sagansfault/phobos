@@ -7,18 +7,21 @@ import java.util.List;
 
 public abstract class BuildPattern {
 
+    /* The blocks to place per iteration. This may or may not be used by child implementations */
     protected final int blocksPerIteration;
 
+    /**
+     * Constructs a new BuildPattern.
+     *
+     * @param blocksPerIteration The blocks to place per each iteration. This may or may no do anything depending on
+     *                           the child implementation.
+     */
     public BuildPattern(int blocksPerIteration) {
         this.blocksPerIteration = Math.max(1, blocksPerIteration);
     }
 
     public BuildPattern() {
         this(Integer.MAX_VALUE);
-    }
-
-    public int getBlocksPerIteration() {
-        return blocksPerIteration;
     }
 
     /**

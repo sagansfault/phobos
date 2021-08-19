@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Pretty much internal use only. Use these at your own discretion.
+ */
 public class Util {
 
     private Util() {}
