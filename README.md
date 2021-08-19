@@ -1,6 +1,8 @@
 # phobos 🏰
 A stylistic asynchronously processed mine craft world edit schematic builder, providing cool ways to build schematics with effects and pattern all while the sorting and processing happens on another thread
 
+If you've been here before or don't care about super cool amazing gifs, read the wiki: [Phobos Wiki](https://github.com/sagansfault/phobos/wiki)
+
 ### Why Java 16?
 You need directions to the bingo hall too? Update your java, it's starting to smell.
 
